@@ -225,6 +225,14 @@ spark.hadoop.fs.s3a.secret.key               71Xsy8IgPePr50DK1yOQ42Eiy9af5d9LJyR
 ```bash
 /opt/spark/bin/spark-submit --deploy-mode client read_head5.py
 ```
+also you can test your spark by this 
+```bash
+spark-shell
+```
+after run spark shell 
+```bash
+spark.read.text("s3a://dataset/healthcare_dataset.csv").show(5, false)
+```
 
 Should print first five rows without `NoClassDefFoundError`.
 
