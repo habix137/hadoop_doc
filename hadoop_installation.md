@@ -72,6 +72,7 @@ cd /opt/hadoop/etc/hadoop
   </property>
 </configuration>
 ```
+> replication should compatible with number of datanode for example if you have 2 datanode so your replication should be 2 
 
 ### On DataNode:
 
