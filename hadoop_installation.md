@@ -38,6 +38,10 @@ source ~/.bashrc
 
 ---
 
+```bash
+cd /opt/hadoop/etc/hadoop
+```
+
 ## Step 3: Configure `core-site.xml` (Common)
 
 ```xml
