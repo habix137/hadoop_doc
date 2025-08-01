@@ -1,4 +1,4 @@
-# Hadoop Installation Guide
+# Hadoop Installation Guide (with NameNode and DataNode Roles)
 
 ## Step 1: Download and Extract Hadoop
 
@@ -36,40 +36,24 @@ Apply changes:
 source ~/.bashrc
 ```
 
-## Step 3: Configure `core-site.xml`
+---
 
-```bash
-cd /opt/hadoop/etc/hadoop
-nano core-site.xml
-```
-
-Insert the following inside `<configuration>`:
+## Step 3: Configure `core-site.xml` (Common)
 
 ```xml
-<property>
-  <name>fs.defaultFS</name>
-  <value>hdfs://<master_ip>:9000</value>
-</property>
+<configuration>
+  <property>
+    <name>fs.defaultFS</name>
+    <value>hdfs://<namenode-hostname-or-ip>:9000</value>
+  </property>
+</configuration>
 ```
+
+---
 
 ## Step 4: Configure `hdfs-site.xml`
 
-Create directories and set permissions:
-
-```bash
-sudo mkdir -p /data/hadoop/namenode
-sudo mkdir -p /data/hadoop/datanode
-sudo chown konect:konect /data/hadoop/namenode
-sudo chown konect:konect /data/hadoop/datanode
-```
-
-Edit file:
-
-```bash
-nano /opt/hadoop/etc/hadoop/hdfs-site.xml
-```
-
-Insert:
+### On NameNode:
 
 ```xml
 <configuration>
@@ -77,20 +61,36 @@ Insert:
     <name>dfs.replication</name>
     <value>3</value>
   </property>
-  <property>
-    <name>dfs.datanode.data.dir</name>
-    <value>file:/opt/hadoop/hdfs/datanode</value>
-  </property>
+
   <property>
     <name>dfs.namenode.name.dir</name>
-    <value>file:/opt/hadoop/hdfs/namenode</value>
+    <value>file:/data/hadoop/namenode</value>
   </property>
 </configuration>
 ```
 
-## Step 5: Set `JAVA_HOME` in `hadoop-env.sh`
+### On DataNode:
 
-Edit file:
+```xml
+<configuration>
+  <property>
+    <name>dfs.datanode.data.dir</name>
+    <value>file:/data/hadoop/datanode</value>
+  </property>
+</configuration>
+```
+
+Create directories and set permissions:
+
+```bash
+sudo mkdir -p /data/hadoop/namenode
+sudo mkdir -p /data/hadoop/datanode
+sudo chown -R $USER:$USER /data/hadoop/
+```
+
+---
+
+## Step 5: Set `JAVA_HOME` in `hadoop-env.sh`
 
 ```bash
 nano /opt/hadoop/etc/hadoop/hadoop-env.sh
@@ -100,24 +100,27 @@ Add:
 
 ```bash
 export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
-export HADOOP_SSH_OPTS="-i ~/.ssh/spark -o StrictHostKeyChecking=no"
 ```
 
-## Step 6: Format the Namenode
+---
+
+## Step 6: Format the NameNode (Only on NameNode)
 
 ```bash
-/opt/hadoop/bin/hdfs namenode -format
+hdfs namenode -format
 ```
 
-## Step 7: Setup SSH and Workers List
+---
 
-Add worker hostnames to:
+## Step 7: Setup SSH and Workers List (Only on NameNode)
+
+Edit:
 
 ```bash
 nano /opt/hadoop/etc/hadoop/workers
 ```
 
-Example content:
+Example:
 
 ```
 worker1
@@ -125,37 +128,35 @@ worker2
 worker3
 ```
 
-Ensure `/etc/hosts` contains the worker IPs and hostnames.
+Ensure `/etc/hosts` contains mappings for all nodes.
+
+---
 
 ## Step 8: Start HDFS Services
 
-On master:
+On NameNode:
 
 ```bash
-/opt/hadoop/sbin/start-dfs.sh
+start-dfs.sh
 ```
 
-On each worker (optional):
+On each DataNode (optional):
 
 ```bash
-/opt/hadoop/sbin/start-dfs.sh
+start-dfs.sh
 ```
 
-Verify status:
+Verify cluster:
 
 ```bash
-/opt/hadoop/bin/hdfs dfsadmin -report
+hdfs dfsadmin -report
 ```
 
-## Step 9: Setup Hadoop on Client Node
+---
 
-Repeat Hadoop installation steps. Then:
+## Step 9: Client Node Setup (Optional)
 
-```bash
-nano ~/.bashrc
-```
-
-Add:
+Repeat installation and update `.bashrc`:
 
 ```bash
 export HADOOP_HOME=/opt/hadoop
@@ -163,53 +164,35 @@ export HADOOP_CONF_DIR=$HADOOP_HOME/etc/hadoop
 export PATH=$PATH:$HADOOP_HOME/bin
 ```
 
-Edit `core-site.xml`:
+Update `core-site.xml` with:
 
 ```xml
 <configuration>
   <property>
     <name>fs.defaultFS</name>
-    <value>hdfs://<NameNode-IP>:9000</value>
+    <value>hdfs://<namenode-ip>:9000</value>
   </property>
 </configuration>
 ```
 
-## Step 10: HDFS File Operations
+---
 
-Create directory:
+## Step 10: HDFS File Operations
 
 ```bash
 hdfs dfs -mkdir -p /user/hadoop/
-```
-
-Check ownership:
-
-```bash
 hdfs dfs -ls /user
-```
-
-Change ownership:
-
-```bash
 hdfs dfs -chown ali /user/hadoop
 hdfs dfs -chmod 775 /user/hadoop
-```
 
-Upload file:
-
-```bash
 hdfs dfs -put healthcare_dataset.csv /user/hadoop/
-```
-
-Check file replication:
-
-```bash
 hdfs fsck /user/hadoop/healthcare_dataset.csv -files -blocks -locations
 ```
+
+---
 
 ## Verify Hadoop Version
 
 ```bash
 hadoop version
 ```
-
