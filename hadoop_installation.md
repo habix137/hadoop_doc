@@ -5,7 +5,7 @@
 ```bash
 wget https://dlcdn.apache.org/hadoop/common/hadoop-3.4.1/hadoop-3.4.1.tar.gz
 tar xvf hadoop-3.4.1.tar.gz
-mv hadoop-3.4.1 /opt/hadoop
+sudo mv hadoop-3.4.1 /opt/hadoop
 ```
 
 ## Step 2: Add Hadoop to PATH
