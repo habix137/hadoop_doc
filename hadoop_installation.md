@@ -74,6 +74,41 @@ cd /opt/hadoop/etc/hadoop
 ```
 > replication should compatible with number of datanode for example if you have 2 datanode so your replication should be 2 
 
+for web hdfs enable put it
+```bash
+<configuration>
+  <!-- Keep your replication -->
+  <property>
+    <name>dfs.replication</name>
+    <value>3</value>
+  </property>
+
+  <!-- Keep your NameNode metadata directory -->
+  <property>
+    <name>dfs.namenode.name.dir</name>
+    <value>file:/data/hadoop/namenode</value>
+  </property>
+
+  <!-- Enable WebHDFS -->
+  <property>
+    <name>dfs.webhdfs.enabled</name>
+    <value>true</value>
+  </property>
+
+  <!-- NameNode HTTP server (WebHDFS lives here) -->
+  <property>
+    <name>dfs.namenode.http-address</name>
+    <value>master:9870</value>
+  </property>
+
+  <!-- (Recommended) Explicit NameNode RPC address for the default nameservice -->
+  <property>
+    <name>dfs.namenode.rpc-address</name>
+    <value>master:8021</value>
+  </property>
+</configuration>
+```
+
 ### On DataNode:
 
 ```xml
@@ -83,6 +118,41 @@ cd /opt/hadoop/etc/hadoop
     <value>file:/data/hadoop/datanode</value>
   </property>
 </configuration>
+```
+for web hdfs 
+```bash
+<configuration>
+  <!-- Keep your replication -->
+  <property>
+    <name>dfs.replication</name>
+    <value>3</value>
+  </property>
+
+  <!-- Keep your NameNode metadata directory -->
+  <property>
+    <name>dfs.namenode.name.dir</name>
+    <value>file:/data/hadoop/namenode</value>
+  </property>
+
+  <!-- Enable WebHDFS -->
+  <property>
+    <name>dfs.webhdfs.enabled</name>
+    <value>true</value>
+  </property>
+
+  <!-- NameNode HTTP server (WebHDFS lives here) -->
+  <property>
+    <name>dfs.namenode.http-address</name>
+    <value>master:9870</value>
+  </property>
+
+  <!-- (Recommended) Explicit NameNode RPC address for the default nameservice -->
+  <property>
+    <name>dfs.namenode.rpc-address</name>
+    <value>master:8021</value>
+  </property>
+</configuration>
+
 ```
 
 Create directories and set permissions:
