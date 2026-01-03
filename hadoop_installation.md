@@ -122,16 +122,10 @@ for web hdfs enable put it
 for web hdfs 
 ```bash
 <configuration>
-  <!-- Keep your replication -->
+  <!-- Keep your DataNode data directory -->
   <property>
-    <name>dfs.replication</name>
-    <value>3</value>
-  </property>
-
-  <!-- Keep your NameNode metadata directory -->
-  <property>
-    <name>dfs.namenode.name.dir</name>
-    <value>file:/data/hadoop/namenode</value>
+    <name>dfs.datanode.data.dir</name>
+    <value>file:/data/hadoop/datanode</value>
   </property>
 
   <!-- Enable WebHDFS -->
@@ -140,19 +134,22 @@ for web hdfs
     <value>true</value>
   </property>
 
-  <!-- NameNode HTTP server (WebHDFS lives here) -->
+  <!-- DataNode service ports (these are the usual defaults, explicit is nice) -->
   <property>
-    <name>dfs.namenode.http-address</name>
-    <value>master:9870</value>
+    <name>dfs.datanode.address</name>
+    <value>0.0.0.0:9866</value>
   </property>
 
-  <!-- (Recommended) Explicit NameNode RPC address for the default nameservice -->
   <property>
-    <name>dfs.namenode.rpc-address</name>
-    <value>master:8021</value>
+    <name>dfs.datanode.http.address</name>
+    <value>0.0.0.0:9864</value>
+  </property>
+
+  <property>
+    <name>dfs.datanode.ipc.address</name>
+    <value>0.0.0.0:9867</value>
   </property>
 </configuration>
-
 ```
 
 Create directories and set permissions:
