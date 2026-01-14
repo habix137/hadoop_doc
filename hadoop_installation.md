@@ -8,7 +8,7 @@ tar xvf hadoop-3.4.1.tar.gz
 mv hadoop-3.4.1 /opt/hadoop
 ```
 
-## Step 2: Add Hadoop to PATH
+## Step 2: Add Hadoop to PATH to all datanodes and namenode
 
 Edit `~/.bashrc`:
 
